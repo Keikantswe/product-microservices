@@ -30,7 +30,7 @@ public class ProductService {
     public List<ProductResponse> getAllProducts() {
         List<ProductEntity> product = productRepository.findAll();
 
-        //Map the data to the Response, Method is on "Helper Method"
+        //Map the data to the Response, Method is on "Helper Method."
         return product.stream().map(productEntity -> mapToProductResponse(productEntity)).toList();
     }
 
