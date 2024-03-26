@@ -31,14 +31,15 @@ public class ProductController {
 
         try {
 
-
+            productService.createProduct(productRequest);
 
             return ResponseEntity.ok(
+
                     Response.builder()
                             .timeStamp(now())
                             .statusCode(HttpStatus.CREATED.value())
                             .status(HttpStatus.CREATED)
-                            .data(Collections.singletonMap(  ,productService.createProduct(productRequest)))
+                            //.data(Collections.singletonMap( productService.createProduct(productRequest)))
                             .message("Product created successfully")
                             .build()
             );
@@ -46,7 +47,7 @@ public class ProductController {
         catch(Exception e){
             log.info("Error adding a product");
 
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            return ResponseEntity.internalServerError()
                     .body(
                             Response.builder()
                                     .timeStamp(now())

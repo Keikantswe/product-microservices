@@ -2,6 +2,8 @@ server:
   port: 8084
 
 spring:
+  application:
+    name: Order-Service
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5433/order-service
@@ -19,46 +21,53 @@ spring:
       database: postresql
       database-platform: org.hibernate.dialect.PostgreSQLDialect
 
+
      #Enabling circuit breaker.
-management:
-  health:
-    circuitbreakers:
-      enabled: true
+#management:
+#  health:
+#    circuitbreakers:
+#      enabled: true
+#
+#  endpoint:
+#    health:
+#      show-details: always
+#
+#  endpoints:
+#    web:
+#      exposure:
+#        include:*
+#
+##Configuring  circuit breaker
+#resilience4j:
+#  circuit breaker:
+#    instances:
+#      inventory:
+#        register-health-indicator: true
+#        event-consumer-buffer-size: 10
+#        sliding-window-type: COUNT_BASED
+#        sliding-window-size: 5
+#        failure-rate-threshold: 50
+#        wait-duration-in-open-state: 5s
+#        permitted-number-of-calls-in-half-open-state: 3
+#        automatic-transition-from-open-to-half-open-enabled: true
+#
+##Timeliter for slow responses
+#  time limiter:
+#    instances:
+#      inventory:
+#        timeout-duration: 3s
+#
+#  retry:
+#    instances:
+#      inventory:
+#        max-attempts: 3
+#        wait-duration: 5s
+eureka:
+  client:
+    service-url:
+     defaultZone: http://localhost:8762/eureka
+    fetch-registry: true
 
-  endpoint:
-    health:
-      show-details: always
-
-  endpoints:
-    web:
-      exposure:
-        include: *
-
-#Configuring  circuit breaker
-resilience4j:
-  circuitbreaker:
-    instances:
-      inventory:
-        register-health-indicator: true
-        event-consumer-buffer-size: 10
-        sliding-window-type: COUNT_BASED
-        sliding-window-size: 5
-        failure-rate-threshold: 50
-        wait-duration-in-open-state: 5s
-        permitted-number-of-calls-in-half-open-state: 3
-        automatic-transition-from-open-to-half-open-enabled: true
-
-#Timeliter for slow responses
-  timelimiter:
-    instances:
-      inventory:
-        timeout-duration: 3s
-
-  retry:
-    instances:
-      inventory:
-        max-attempts: 3
-        wait-duration: 5s
 
 
 
