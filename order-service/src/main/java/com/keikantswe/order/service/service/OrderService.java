@@ -7,6 +7,7 @@ import com.keikantswe.order.service.model.OrderLineItems;
 import com.keikantswe.order.service.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,6 +17,9 @@ public class OrderService {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private WebClient webClient;
 
     public void placeOrder(OrderRequest orderRequest) {
 
@@ -31,7 +35,18 @@ public class OrderService {
 
         order.setOrderLineItems(orderLineItems);
 
-        orderRepository.save(order);
+        Boolean results = webClient.get()
+                .uri("http://localhost:8082/api/inventory")
+                .retrieve()
+                .bodyToMono(Boolean.class)
+                .block();
+
+        if(results){
+            orderRepository.save(order);
+        }else {
+            throw new IllegalArgumentException("Product out of stock");
+        }
+
     }
 
     //=========================================Helper Methods=======================================================================

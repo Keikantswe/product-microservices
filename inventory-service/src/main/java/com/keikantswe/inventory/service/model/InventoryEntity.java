@@ -20,6 +20,6 @@ public class InventoryEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String barcode;
-    private String quantity;
+    private int quantity;
 
 }
