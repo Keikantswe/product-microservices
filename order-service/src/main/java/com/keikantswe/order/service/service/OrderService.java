@@ -1,5 +1,6 @@
 package com.keikantswe.order.service.service;
 
+import com.keikantswe.order.service.dto.InventoryResponse;
 import com.keikantswe.order.service.dto.OrderLineItemsDto;
 import com.keikantswe.order.service.dto.OrderRequest;
 import com.keikantswe.order.service.model.OrderEntity;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,13 +37,21 @@ public class OrderService {
 
         order.setOrderLineItems(orderLineItems);
 
-        Boolean results = webClient.get()
+        List<String> barcode = order.getOrderLineItems()
+                .stream()
+                .map(OrderLineItems -> OrderLineItems.getBarcode())
+                .toList();
+
+        InventoryResponse[] inventoryResponsesArray = webClient.get()
                 .uri("http://localhost:8082/api/inventory")
                 .retrieve()
-                .bodyToMono(Boolean.class)
+                .bodyToMono(InventoryResponse[].class)
                 .block();
 
-        if(results){
+        boolean allProduct = Arrays.stream(inventoryResponsesArray)
+                .allMatch(InventoryResponse -> InventoryResponse.isInStock());
+
+        if(allProduct){
             orderRepository.save(order);
         }else {
             throw new IllegalArgumentException("Product out of stock");
